@@ -20,9 +20,9 @@ input_line_t input_line_create(size_t n_ctrls, ...)
 	return line;
 }
 
-void input_line_move(input_line_t line, bool down)
+void input_line_move(input_line_t line, ssize_t offset)
 {
-	size_t offset = (down?LINE_HEIGHT:-1*LINE_HEIGHT);
+	offset *= LINE_HEIGHT;
 	for(size_t i = 0; i < line.hwnd_arr_len; i++)
         {
                 HWND hWnd = line.hwnd_arr[i];

@@ -2,6 +2,7 @@
 
 def_unit_t meter_units[] = {{"m",1},{"km",1/1000},{"Mm",1/1000000},{"Gm",1/1000000000},{"Tm",1/1000000000000},{NULL,0}};
 def_unit_t gr_units[] = {{"g",1},{"kg",1/1000},{"Mg",1/1000000},{"Gg",1/1000000000},{"Tg",1/1000000000000},{NULL,0}};
+def_unit_t angle_units[] = {{"rad",1},{L"°",3.14/180},{NULL,0}};
 
 HWND __hMainWnd;
 HINSTANCE __hIns;
@@ -15,20 +16,13 @@ void input_add_line(size_t pos, input_line_t line)
 
 	size_t index = pos;
 	input_line_t cur_line, prev_line = __lines.line_arr[index];
-	printf("%d -> %d-------------------\n",pos,__lines.n_lines);
 	for(size_t i = index+1; i < __lines.n_lines; i++)
 	{
-
-		puts("moving---");
-		input_line_move(prev_line,true);
-
 		cur_line = __lines.line_arr[i];
 		__lines.line_arr[i] = prev_line;
 		prev_line = cur_line;
 	}
-
 	__lines.line_arr[pos] = line;
-
 }
 
 void input_delete_line(size_t pos)
@@ -99,5 +93,25 @@ size_t input_get_str_width(const char* str)
 
 void input_repaint()
 {
+       for(ssize_t i = 0; i < __lines.n_lines; i++)
+        {
+                input_line_t line = __lines.line_arr[i];
+		if(line.hwnd_arr_len != 0)
+		{
+	                ssize_t pos;
+			{
+				RECT rct;
+				GetWindowRect(line.hwnd_arr[0],&rct);
+				POINT pt = {rct.right,rct.bottom};
+				ScreenToClient(__hMainWnd,&pt);
+				pos = pt.y/LINE_HEIGHT-1;
+			}
+			ssize_t offset = i-pos;
+			if(offset != 0)
+			{
+				input_line_move(line,offset);
+			}
+		}
+        }
 	InvalidateRect(__hMainWnd,NULL,TRUE);
 }

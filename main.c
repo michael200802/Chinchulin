@@ -3,10 +3,40 @@
 input_planet_sys_t * plt_sys_arr = NULL;
 size_t plt_sys_arr_len = 0;
 
-void __handle_command_msg(HWND hWnd, input_planet_sys_child_t * plt_sys_child_arr)
+void __handle_command_msg(HWND hWnd, input_planet_sys_child_t * plt_sys_child)
 {
-        input_planet_sys_child_t * cur_plt_sys = plt_sys_child_arr;
-        if(hWnd == cur_plt_sys->hButton_new_sys)
+        input_planet_sys_child_t * cur_plt_sys = plt_sys_child;
+	if(hWnd == cur_plt_sys->aphelion.hEdit_num || hWnd == cur_plt_sys->aphelion.hEdit_exp)
+	{
+		input_quantity_check_val(&cur_plt_sys->aphelion);
+		return;
+	}
+	else if(hWnd == cur_plt_sys->perihelion.hEdit_num || hWnd == cur_plt_sys->perihelion.hEdit_exp)
+	{
+		input_quantity_check_val(&cur_plt_sys->perihelion);
+		return;
+	}
+	else if(hWnd == cur_plt_sys->inclination_angle.hEdit_num || hWnd == cur_plt_sys->inclination_angle.hEdit_exp)
+	{
+		input_quantity_check_val(&cur_plt_sys->inclination_angle);
+		return;
+	}
+	else if(hWnd == cur_plt_sys->phase_angle.hEdit_num || hWnd == cur_plt_sys->phase_angle.hEdit_exp)
+	{
+		input_quantity_check_val(&cur_plt_sys->phase_angle);
+		return;
+	}
+	else if(hWnd == cur_plt_sys->star.mass.hEdit_num || hWnd == cur_plt_sys->star.mass.hEdit_exp)
+	{
+		input_quantity_check_val(&cur_plt_sys->star.mass);
+		return;
+	}
+	else if(hWnd == cur_plt_sys->star.radius.hEdit_num || hWnd == cur_plt_sys->star.radius.hEdit_exp)
+	{
+		input_quantity_check_val(&cur_plt_sys->star.radius);
+		return;
+	}
+        else if(hWnd == cur_plt_sys->hButton_new_sys)
         {
                 input_planet_sys_child_add_sys(cur_plt_sys);
                 return;
@@ -28,6 +58,37 @@ void __handle_command_msg(HWND hWnd, input_planet_sys_child_t * plt_sys_child_ar
 				input_planet_sys_child_remove_planet(cur_plt_sys,i);
 				return;
 			}
+			else if(hWnd == cur_plt.aphelion.hEdit_num || hWnd == cur_plt.aphelion.hEdit_exp)
+			{
+				input_quantity_check_val(&cur_plt.aphelion);
+				return;
+			}
+			else if(hWnd == cur_plt.perihelion.hEdit_num || hWnd == cur_plt.perihelion.hEdit_exp)
+			{
+				input_quantity_check_val(&cur_plt.perihelion);
+				return;
+			}
+			else if(hWnd == cur_plt.inclination_angle.hEdit_num || hWnd == cur_plt.inclination_angle.hEdit_exp)
+			{
+				input_quantity_check_val(&cur_plt.inclination_angle);
+				return;
+			}
+			else if(hWnd == cur_plt.phase_angle.hEdit_num || hWnd == cur_plt.phase_angle.hEdit_exp)
+			{
+				input_quantity_check_val(&cur_plt.phase_angle);
+				return;
+			}
+			else if(hWnd == cur_plt.body.mass.hEdit_num || hWnd == cur_plt.body.mass.hEdit_exp)
+			{
+				input_quantity_check_val(&cur_plt.body.mass);
+				return;
+			}
+			else if(hWnd == cur_plt.body.radius.hEdit_num || hWnd == cur_plt.body.radius.hEdit_exp)
+			{
+				input_quantity_check_val(&cur_plt.body.radius);
+				return;
+			}
+
 		}
 
 		input_planet_sys_child_t* plt_sys_child_arr = cur_plt_sys->planet_sys_childs_arr;
@@ -54,14 +115,28 @@ void handle_command_msg(LPARAM lParam)
 	for(size_t i = 0; i < plt_sys_arr_len; i++)
 	{
 		input_planet_sys_t * cur_plt_sys = &plt_sys_arr[i];
-		if(hWnd == cur_plt_sys->hButton_new_sys)
+		if(hWnd == cur_plt_sys->x_pos.hEdit_num || hWnd == cur_plt_sys->x_pos.hEdit_exp)
 		{
+			input_quantity_check_val(&cur_plt_sys->x_pos);
+			return;
+		}
+		else if(hWnd == cur_plt_sys->y_pos.hEdit_num || hWnd == cur_plt_sys->y_pos.hEdit_exp)
+		{
+			input_quantity_check_val(&cur_plt_sys->y_pos);
+			return;
+		}
+		else if(hWnd == cur_plt_sys->hButton_new_sys)
+		{
+			puts("adding sys");
 			input_planet_sys_add_sys(cur_plt_sys);
+			puts("sys added");
 			return;
 		}
 		else if(hWnd == cur_plt_sys->hButton_new_planet)
 		{
+			puts("adding plt");
 			input_planet_sys_add_planet(cur_plt_sys);
+			puts("plt added");
 			return;
 		}
 		else if(hWnd == cur_plt_sys->hButton_destroy)
@@ -86,9 +161,37 @@ void handle_command_msg(LPARAM lParam)
 				input_planet_t cur_plt = planets_arr[i];
 				if(cur_plt.hButton_destroy == hWnd)
 				{
-					puts("Nayn");
-
 					input_planet_sys_remove_planet(cur_plt_sys,i);
+					return;
+				}
+				else if(hWnd == cur_plt.aphelion.hEdit_num || hWnd == cur_plt.aphelion.hEdit_exp)
+				{
+					input_quantity_check_val(&cur_plt.aphelion);
+					return;
+				}
+				else if(hWnd == cur_plt.perihelion.hEdit_num || hWnd == cur_plt.perihelion.hEdit_exp)
+				{
+					input_quantity_check_val(&cur_plt.perihelion);
+					return;
+				}
+				else if(hWnd == cur_plt.inclination_angle.hEdit_num || hWnd == cur_plt.inclination_angle.hEdit_exp)
+				{
+					input_quantity_check_val(&cur_plt.inclination_angle);
+					return;
+				}
+				else if(hWnd == cur_plt.phase_angle.hEdit_num || hWnd == cur_plt.phase_angle.hEdit_exp)
+				{
+					input_quantity_check_val(&cur_plt.phase_angle);
+					return;
+				}
+				else if(hWnd == cur_plt.body.mass.hEdit_num || hWnd == cur_plt.body.mass.hEdit_exp)
+				{
+					input_quantity_check_val(&cur_plt.body.mass);
+					return;
+				}
+				else if(hWnd == cur_plt.body.radius.hEdit_num || hWnd == cur_plt.body.radius.hEdit_exp)
+				{
+					input_quantity_check_val(&cur_plt.body.radius);
 					return;
 				}
 			}
@@ -102,21 +205,52 @@ void handle_command_msg(LPARAM lParam)
 					input_planet_sys_remove_sys(cur_plt_sys,i);
 					return;
 				}
+				else if(hWnd == plt_sys_child_arr[i].aphelion.hEdit_num || hWnd == plt_sys_child_arr[i].aphelion.hEdit_exp)
+				{
+					input_quantity_check_val(&plt_sys_child_arr[i].aphelion);
+					return;
+				}
+				else if(hWnd == plt_sys_child_arr[i].perihelion.hEdit_num || hWnd == plt_sys_child_arr[i].perihelion.hEdit_exp)
+				{
+					input_quantity_check_val(&plt_sys_child_arr[i].perihelion);
+					return;
+				}
+				else if(hWnd == plt_sys_child_arr[i].inclination_angle.hEdit_num || hWnd == plt_sys_child_arr[i].inclination_angle.hEdit_exp)
+				{
+					input_quantity_check_val(&plt_sys_child_arr[i].inclination_angle);
+					return;
+				}
+				else if(hWnd == plt_sys_child_arr[i].phase_angle.hEdit_num || hWnd == plt_sys_child_arr[i].phase_angle.hEdit_exp)
+				{
+					input_quantity_check_val(&plt_sys_child_arr[i].phase_angle);
+					return;
+				}
+				else if(hWnd == plt_sys_child_arr[i].star.mass.hEdit_num || hWnd == plt_sys_child_arr[i].star.mass.hEdit_exp)
+				{
+					input_quantity_check_val(&plt_sys_child_arr[i].star.mass);
+					return;
+				}
+				else if(hWnd == plt_sys_child_arr[i].star.radius.hEdit_num || hWnd == plt_sys_child_arr[i].star.radius.hEdit_exp)
+				{
+					input_quantity_check_val(&plt_sys_child_arr[i].star.radius);
+					return;
+				}
 				else
 				{
 					__handle_command_msg(hWnd,plt_sys_child_arr+i);
 				}
 			}
 		}
-		break;
 	}
 }
+
+#define MENU_ADD_ID (10)
+#define MENU_START_ID (MENU_ADD_ID+1)
 
 LRESULT CALLBACK MainWndProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
 	static HINSTANCE hIns;
-	static HWND hBtnAddSys;
-	static size_t wnd_height;
+	static size_t wnd_height, max_scroll;
 	static BOOL scroll_shown = TRUE;
 	switch(Msg)
 	{
@@ -126,28 +260,17 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 			input_set_mainwnd(hWnd);
 			input_set_ins(hIns);
 
-			input_add_line(input_get_n_lines(),input_line_create(
-				1,
-			       	hBtnAddSys = CreateWindow(
-			                WC_BUTTON,
-			                "Registrar sistema",
-			                WS_VISIBLE|WS_CHILD|WS_BORDER|BS_PUSHBUTTON,
-			                ntab_to_screen(0),
-			                line_to_screen(0),
-			                input_get_str_width("Registrar sistema"),
-			                LINE_HEIGHT,
-			                hWnd,
-			                NULL,
-			                hIns,
-			                NULL
-			                )
-				)
-			);
-
 			{
+				HMENU hMainMenu = CreateMenu();
+				AppendMenu(hMainMenu,MF_STRING,MENU_ADD_ID,"Registrar sistema");
+				AppendMenu(hMainMenu,MF_STRING,MENU_START_ID,"Empezar simulacion");
+				SetMenu(hWnd,hMainMenu);
+
 				SCROLLINFO sif = {.cbSize = sizeof(SCROLLINFO), .fMask = SIF_PAGE, .nPage = LINE_HEIGHT};
 				SetScrollInfo(hWnd,SB_VERT,&sif,FALSE);
 			}
+
+			
 
 			break;
 		case WM_COMMAND:
@@ -156,52 +279,61 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 				SCROLLINFO sif = {.cbSize = sizeof(SCROLLINFO), .fMask = SIF_POS};
                                 GetScrollInfo(hWnd,SB_VERT,&sif);
 				if(sif.nPos != 0) {ScrollWindow(hWnd,0,sif.nPos,NULL,NULL);}
-				if((HWND)lParam == hBtnAddSys)
+				switch(LOWORD(wParam))
 				{
-					char buff[100]; sprintf(buff,"Sistema planetario numero %zu",plt_sys_arr_len);
-					input_planet_sys_t new_plt_sys = input_planet_sys_create(buff,input_get_wnd_line(hBtnAddSys)+input_get_n_lines(),1);
-					plt_sys_arr_len++;
-					plt_sys_arr = realloc(plt_sys_arr,plt_sys_arr_len*sizeof(input_planet_sys_t));
-					plt_sys_arr[plt_sys_arr_len-1] = new_plt_sys;
-				}
-				else
-				{
-					handle_command_msg(lParam);
+					case MENU_ADD_ID:
+						{
+							char buff[100]; sprintf(buff,"Sistema planetario numero %zu",plt_sys_arr_len);
+							input_planet_sys_t new_plt_sys = input_planet_sys_create(
+								buff,
+								input_get_n_lines(),
+								1);
+							plt_sys_arr_len++;
+							plt_sys_arr = realloc(plt_sys_arr,plt_sys_arr_len*sizeof(input_planet_sys_t));
+							plt_sys_arr[plt_sys_arr_len-1] = new_plt_sys;
+						}
+						break;
+					case MENU_START_ID:
+						{
+							
+						}
+						break;
+					default:
+						handle_command_msg(lParam);
+						break;
 				}
 				if(sif.nPos != 0) {ScrollWindow(hWnd,0,-1*sif.nPos,NULL,NULL);}
+
 			}
 		case WM_SIZE:
-			if(Msg == WM_SIZE) {wnd_height = HIWORD(lParam);}
+				if(Msg == WM_SIZE) {wnd_height = HIWORD(lParam);}
 
-			printf("%d -> %d\n", wnd_height/LINE_HEIGHT, input_get_n_lines());
-			if(wnd_height/LINE_HEIGHT < input_get_n_lines())
-			{
-				if(scroll_shown == FALSE)
+				if(wnd_height/LINE_HEIGHT < input_get_n_lines())
 				{
-					scroll_shown = TRUE;
-					ShowScrollBar(hWnd,SB_VERT,TRUE);
+					if(scroll_shown == FALSE)
+					{
+						scroll_shown = TRUE;
+						ShowScrollBar(hWnd,SB_VERT,TRUE);
+					}
+					SCROLLINFO scinf = {
+							.cbSize = sizeof(SCROLLINFO),
+							.fMask = SIF_RANGE,
+							.nMin = 0,
+							.nMax = (input_get_n_lines())*LINE_HEIGHT-(wnd_height/LINE_HEIGHT)*LINE_HEIGHT
+					};
+					max_scroll = scinf.nMax;
+					SetScrollInfo(hWnd,SB_VERT,&scinf,TRUE);
 				}
-				SCROLLINFO scinf = {
-						.cbSize = sizeof(SCROLLINFO),
-						.fMask = SIF_RANGE,
-						.nMin = 0,
-						.nMax = (input_get_n_lines())*LINE_HEIGHT-LINE_HEIGHT
-				};
-				SetScrollInfo(hWnd,SB_VERT,&scinf,TRUE);
-			}
-			else if(scroll_shown == TRUE)
-			{
-				scroll_shown = FALSE;
-				ShowScrollBar(hWnd,SB_VERT,FALSE);
-			}
-			input_repaint();
-			UpdateWindow(hWnd);
+				else if(scroll_shown == TRUE)
+				{
+					scroll_shown = FALSE;
+					ShowScrollBar(hWnd,SB_VERT,FALSE);
+				}
 			break;
 		case WM_VSCROLL:
 			{
 				size_t prev_nPos;
-				SCROLLINFO sif = {.cbSize = sizeof(SCROLLINFO), .fMask = SIF_POS};
-				GetScrollInfo(hWnd,SB_VERT,&sif);
+				static SCROLLINFO sif = {.cbSize = sizeof(SCROLLINFO), .fMask = SIF_POS, .nPos = 0};
 				prev_nPos = sif.nPos;
 				switch(LOWORD(wParam))
 				{
@@ -210,20 +342,27 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 						sif.nPos = HIWORD(wParam);
 						break;
 					case SB_LINEUP:
-						sif.nPos++;
+						sif.nPos-=LINE_HEIGHT;
 						break;
 					case SB_LINEDOWN:
-						sif.nPos--;
+						sif.nPos+=LINE_HEIGHT;
 						break;
-
 					case SB_PAGEUP:
-						sif.nPos++;
+						sif.nPos-=LINE_HEIGHT;
 						break;
 					case SB_PAGEDOWN:
-						sif.nPos--;
+						sif.nPos+=LINE_HEIGHT;
 						break;
 				}
-				if(prev_nPos != sif.nPos)
+				if(sif.nPos < 0)
+				{
+					sif.nPos = 0;
+				}
+				else if(sif.nPos > max_scroll)
+				{
+					sif.nPos = max_scroll;
+				}
+				else if(prev_nPos != sif.nPos)
 				{
 					size_t new_nPos = sif.nPos;
 					ScrollWindow(hWnd,0,-1*(new_nPos-prev_nPos),NULL,NULL);

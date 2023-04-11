@@ -27,7 +27,7 @@ input_quantity_t input_quantity_create(const char* name, def_unit_t* unit_arr, s
 	line++;
         input.hEdit_num = CreateWindow(
 			WC_EDIT,
-			"0",
+			"",
 			WS_VISIBLE|WS_CHILD|WS_BORDER|ES_CENTER|ES_AUTOHSCROLL,
 			ntab_to_screen(n_tab),
 			line_to_screen(line),
@@ -53,7 +53,7 @@ input_quantity_t input_quantity_create(const char* name, def_unit_t* unit_arr, s
 		);
         input.hEdit_exp = CreateWindow(
 			WC_EDIT,
-			"0",
+			"",
 			WS_VISIBLE|WS_CHILD|WS_BORDER|ES_LEFT,
 			ntab_to_screen(n_tab) + INPUT_QUANTITY_NUM_WIDTH + INPUT_QUANTITY_EXPLABEL_WIDTH,
 			line_to_screen(line),
@@ -86,7 +86,7 @@ input_quantity_t input_quantity_create(const char* name, def_unit_t* unit_arr, s
                         WS_VISIBLE|WS_CHILD|WS_BORDER|SS_LEFT,
                         ntab_to_screen(n_tab),
                         line_to_screen(line),
-                        300,
+                        350,
                         LINE_HEIGHT,
                         hMainWnd,
                         NULL,
@@ -108,9 +108,121 @@ input_quantity_t input_quantity_create(const char* name, def_unit_t* unit_arr, s
 	ComboBox_SetCurSel(input.hCB_unit,0);
 	input.units_arr = unit_arr;
 
-	SetWindowPos(input.hCB_unit,NULL,0,0,INPUT_QUANTITY_CB_WIDTH,LINE_HEIGHT*i,SWP_NOMOVE);
+	SetWindowPos(input.hCB_unit,NULL,0,0,INPUT_QUANTITY_CB_WIDTH,LINE_HEIGHT*(i+1),SWP_NOMOVE);
 
 	return input;
+}
+
+enum input_number_type {NUM_IS_INT, NUM_IS_FLOAT, NUM_INVALID};
+static inline enum input_number_type input_quantity_is_num(char * str)
+{
+	char * str_original = str;
+	while(*str != '\0' && (*str !='.' || *str != ','))
+	{
+		if(!isdigit(*str))
+		{
+			return NUM_INVALID;
+		}
+		str++;
+	}
+
+	//it's empty
+	if(str == str_original)
+	{
+		return NUM_INVALID;
+	}
+
+	//it's not an int
+	if(*str == '.' || *str == ',')
+	{
+		str++;
+		enum input_number_type num_type = input_quantity_is_num(str);
+		if(num_type != NUM_IS_INT)
+		{
+			return NUM_INVALID;
+		}
+		return NUM_IS_FLOAT;
+	}
+
+	return NUM_IS_INT;
+}
+
+bool input_quantity_check_val(input_quantity_t*input)
+{
+	bool num_valid = true, num_empty = false;
+	bool exp_valid = true, exp_empty = false;
+
+	size_t num_len = Edit_GetTextLength(input->hEdit_num)+1;
+	if(num_len == 1)
+	{
+		num_empty = true;
+	}
+	else
+	{
+		char * num_str = malloc(num_len*sizeof(char));
+		Edit_GetText(input->hEdit_num,num_str,num_len);
+		num_valid = (input_quantity_is_num(num_str) != NUM_INVALID);
+		free(num_str);
+	}
+
+	size_t exp_len = Edit_GetTextLength(input->hEdit_exp)+1;
+	if(exp_len == 1)
+	{
+		exp_empty = true;
+	}
+	else
+	{
+		char * exp_str = malloc(exp_len*sizeof(char));
+		Edit_GetText(input->hEdit_exp,exp_str,exp_len);
+		exp_valid = (input_quantity_is_num(exp_str) != NUM_INVALID);
+		free(exp_str);
+	}
+
+
+	if(num_empty && exp_empty)
+	{
+		Static_SetText(input->hStatic_Error,INPUT_QUANTITY_EMPTY_ERROR);
+		return false;
+	}
+	else
+	{
+		if(!num_valid && !exp_valid)
+		{
+			Static_SetText(input->hStatic_Error,INPUT_QUANTITY_NOBOTH_ERROR);
+			return false;
+		}
+		else
+		{
+			char buffer[100];
+			size_t buffer_len = 0;
+			printf("num%d exp%d\n",num_valid,exp_valid);
+			if(!num_valid)
+			{
+				buffer_len+=sprintf(buffer+buffer_len,INPUT_QUANTITY_NONUM_ERROR", ");
+			}
+			else if(!exp_valid)
+			{
+				buffer_len+=sprintf(buffer+buffer_len,INPUT_QUANTITY_NOEXP_ERROR", ");
+			}
+			if(num_empty)
+			{
+				buffer_len+=sprintf(buffer+buffer_len,INPUT_QUANTITY_EMPTY_NUM_ERROR);
+			}
+			else if(exp_empty)
+			{
+				buffer_len+=sprintf(buffer+buffer_len,INPUT_QUANTITY_EMPTY_EXP_ERROR);
+			}
+			if(buffer_len != 0)
+			{
+				Static_SetText(input->hStatic_Error,buffer);
+				return false;
+			}
+		}
+	}
+
+	Static_SetText(input->hStatic_Error,INPUT_QUANTITY_NOERROR);
+
+	return true;
 }
 
 bool input_quantity_get_num(input_quantity_t* input, num_t* number)

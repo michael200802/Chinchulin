@@ -45,6 +45,8 @@ typedef struct
 	//def attr
         input_quantity_t aphelion;
         input_quantity_t perihelion;
+	input_quantity_t inclination_angle;
+	input_quantity_t phase_angle;
 	input_body_t body;
 
 	//self destruct
@@ -62,6 +64,8 @@ typedef struct __input_planet_sys_child
 	//orbit
 	input_quantity_t aphelion;
 	input_quantity_t perihelion;
+	input_quantity_t inclination_angle;
+	input_quantity_t phase_angle;
 
 	//def attr
 	input_body_t star;
