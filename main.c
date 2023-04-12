@@ -250,6 +250,7 @@ void handle_command_msg(LPARAM lParam)
 LRESULT CALLBACK MainWndProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
 	static HINSTANCE hIns;
+	static input_quantity_t RealTime_To_ScreenTime, RealDis_To_ScreenPix;
 	static size_t wnd_height, max_scroll;
 	static BOOL scroll_shown = TRUE;
 	switch(Msg)
@@ -270,7 +271,10 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 				SetScrollInfo(hWnd,SB_VERT,&sif,FALSE);
 			}
 
-			
+			RealDis_To_ScreenPix = input_quantity_create("Cada pixel equivale a",meter_units,0,0);
+			RealTime_To_ScreenTime = input_quantity_create("Cada 100 ms pasan",long_time_units,input_get_n_lines(),0);
+
+			input_add_line(input_get_n_lines(),SEPARATOR_LINE);
 
 			break;
 		case WM_COMMAND:
@@ -299,7 +303,18 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 						}
 						break;
 					default:
-						handle_command_msg(lParam);
+						if((HWND)lParam == RealDis_To_ScreenPix.hEdit_num || (HWND)lParam == RealDis_To_ScreenPix.hEdit_exp)
+						{
+							input_quantity_check_val(&RealDis_To_ScreenPix);
+						}
+						else if((HWND)lParam == RealTime_To_ScreenTime.hEdit_num || (HWND)lParam == RealTime_To_ScreenTime.hEdit_exp)
+						{
+							input_quantity_check_val(&RealTime_To_ScreenTime);
+						}
+						else
+						{
+							handle_command_msg(lParam);
+						}
 						break;
 				}
 				if(sif.nPos != 0) {ScrollWindow(hWnd,0,-1*sif.nPos,NULL,NULL);}

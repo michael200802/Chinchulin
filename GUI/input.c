@@ -3,6 +3,8 @@
 def_unit_t meter_units[] = {{"m","1"},{"km","0.001"},{"Mm","0.000001"},{"Gm","0.000000001"},{"Tm","0.000000000001"},{"ua","149597870700"},{NULL,0}};
 def_unit_t gr_units[] =    {{"g","1"},{"kg","0.001"},{"Mg","0.000001"},{"Gg","0.000000001"},{"Tg","0.000000000001"},{NULL,0}};
 def_unit_t angle_units[] = {{"rad","1"},{L"°","0.017453293"},{NULL,0}};
+def_unit_t long_time_units[] = {{"ano","1"},{NULL,0}};
+def_unit_t short_time_units[] = {{"ms","1"},{"s","1000"},{NULL,0}};
 
 HWND __hMainWnd;
 HINSTANCE __hIns;
