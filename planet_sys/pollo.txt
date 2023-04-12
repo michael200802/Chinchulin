@@ -1,0 +1,6 @@
+afelio=af
+perihelio=per
+
+af+per=2a
+af-a=c
+c=sqrt(a*a-b*b)
