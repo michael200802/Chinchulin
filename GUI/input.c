@@ -1,8 +1,8 @@
 #include "input.h"
 
-def_unit_t meter_units[] = {{"m",1},{"km",1/1000},{"Mm",1/1000000},{"Gm",1/1000000000},{"Tm",1/1000000000000},{NULL,0}};
-def_unit_t gr_units[] = {{"g",1},{"kg",1/1000},{"Mg",1/1000000},{"Gg",1/1000000000},{"Tg",1/1000000000000},{NULL,0}};
-def_unit_t angle_units[] = {{"rad",1},{L"°",3.14/180},{NULL,0}};
+def_unit_t meter_units[] = {{"m","1"},{"km","0.001"},{"Mm","0.000001"},{"Gm","0.000000001"},{"Tm","0.000000000001"},{"ua","149597870700"},{NULL,0}};
+def_unit_t gr_units[] =    {{"g","1"},{"kg","0.001"},{"Mg","0.000001"},{"Gg","0.000000001"},{"Tg","0.000000000001"},{NULL,0}};
+def_unit_t angle_units[] = {{"rad","1"},{L"°","0.017453293"},{NULL,0}};
 
 HWND __hMainWnd;
 HINSTANCE __hIns;

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <mpfr.h>
+
 #include <windows.h>
 #include <windowsx.h>
 #include <commctrl.h>
@@ -10,12 +12,10 @@ typedef struct
 	size_t hwnd_arr_len;
 }input_line_t;
 
-typedef double num_t;
-
 typedef struct
 {
         const char * name;
-        num_t constant;
+        const char * constant;
 }def_unit_t;
 
 typedef struct

@@ -3,9 +3,11 @@
 #include "types.h"
 #include "input_line.h"
 
-extern def_unit_t meter_units[10];
+extern def_unit_t meter_units[11];
 extern def_unit_t gr_units[10];
 extern def_unit_t angle_units[3];
+
+#define MPFR_DEFAULT_PRECISION 200
 
 extern HWND __hMainWnd;
 extern HINSTANCE __hIns;

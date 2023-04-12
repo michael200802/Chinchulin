@@ -28,6 +28,6 @@ input_quantity_t input_quantity_create(const char* name, def_unit_t* unit_arr, s
 
 bool input_quantity_check_val(input_quantity_t*input);
 
-bool input_quantity_get_num(input_quantity_t* input, num_t* number);
+bool input_quantity_get_num(input_quantity_t* input, mpfr_t number);
 
 void input_quantity_destroy(input_quantity_t* input);

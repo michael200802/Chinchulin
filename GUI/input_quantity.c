@@ -1,5 +1,7 @@
 #include "input_quantity.h"
 
+#include <ctype.h>
+
 input_quantity_t input_quantity_create(const char* name, def_unit_t* unit_arr, size_t line, size_t n_tab)
 {
 	const HINSTANCE hIns = __hIns;
@@ -114,13 +116,20 @@ input_quantity_t input_quantity_create(const char* name, def_unit_t* unit_arr, s
 }
 
 enum input_number_type {NUM_IS_INT, NUM_IS_FLOAT, NUM_INVALID};
-static inline enum input_number_type input_quantity_is_num(char * str)
+static inline enum input_number_type input_quantity_edit_is_num(HWND hEdit)
 {
+	size_t length = Edit_GetTextLength(hEdit);
+	if(length == 0)
+	{
+		return NUM_INVALID;
+	}
+	char * str = malloc((length+1)*sizeof(char)); Edit_GetText(hEdit,str,length+1);
 	char * str_original = str;
-	while(*str != '\0' && (*str !='.' || *str != ','))
+	while(*str != '\0' && (*str !='.' && *str != ','))
 	{
 		if(!isdigit(*str))
 		{
+			free(str_original);
 			return NUM_INVALID;
 		}
 		str++;
@@ -129,21 +138,37 @@ static inline enum input_number_type input_quantity_is_num(char * str)
 	//it's empty
 	if(str == str_original)
 	{
+		free(str_original);
 		return NUM_INVALID;
 	}
 
 	//it's not an int
 	if(*str == '.' || *str == ',')
 	{
-		str++;
-		enum input_number_type num_type = input_quantity_is_num(str);
-		if(num_type != NUM_IS_INT)
+		size_t i;
+		for(i = 1; str[i] != '\0'; i++)
 		{
+			if(!isdigit(str[i]))
+			{
+				free(str_original);
+				return NUM_INVALID;
+			}
+		}
+		if(i == 1)
+		{
+			free(str_original);
 			return NUM_INVALID;
 		}
+		if(*str == ',')
+		{
+			*str = '.';
+			Edit_SetText(hEdit,str_original);
+		}
+		free(str_original);
 		return NUM_IS_FLOAT;
 	}
 
+	free(str_original);
 	return NUM_IS_INT;
 }
 
@@ -159,10 +184,7 @@ bool input_quantity_check_val(input_quantity_t*input)
 	}
 	else
 	{
-		char * num_str = malloc(num_len*sizeof(char));
-		Edit_GetText(input->hEdit_num,num_str,num_len);
-		num_valid = (input_quantity_is_num(num_str) != NUM_INVALID);
-		free(num_str);
+		num_valid = (input_quantity_edit_is_num(input->hEdit_num) != NUM_INVALID);
 	}
 
 	size_t exp_len = Edit_GetTextLength(input->hEdit_exp)+1;
@@ -172,10 +194,7 @@ bool input_quantity_check_val(input_quantity_t*input)
 	}
 	else
 	{
-		char * exp_str = malloc(exp_len*sizeof(char));
-		Edit_GetText(input->hEdit_exp,exp_str,exp_len);
-		exp_valid = (input_quantity_is_num(exp_str) != NUM_INVALID);
-		free(exp_str);
+		exp_valid = (input_quantity_edit_is_num(input->hEdit_exp) != NUM_INVALID);
 	}
 
 
@@ -225,29 +244,37 @@ bool input_quantity_check_val(input_quantity_t*input)
 	return true;
 }
 
-bool input_quantity_get_num(input_quantity_t* input, num_t* number)
+bool input_quantity_get_num(input_quantity_t* input, mpfr_t number)
 {
 	char buf[100];
-	double num;
-	double exp;
+	MPFR_DECL_INIT(num,MPFR_DEFAULT_PRECISION);
+	MPFR_DECL_INIT(exp,MPFR_DEFAULT_PRECISION);
+	MPFR_DECL_INIT(unit_const,MPFR_DEFAULT_PRECISION);
 
 	Edit_GetText(input->hEdit_num,buf,100);
-	int err = sscanf(buf,"%f",&num);
-	if(err != 1)
+	if(mpfr_set_str(num,buf,10,MPFR_RNDN) == -1)
 	{
 		return false;
 	}
 
 	Edit_GetText(input->hEdit_exp,buf,100);
-	err = sscanf(buf,"%f",&exp);
-	if(err != 1)
+	if(mpfr_set_str(exp,buf,10,MPFR_RNDN) == -1)
 	{
 		return false;
 	}
 
-	int index = ComboBox_GetCurSel(input->hCB_unit);
 
-	*number = num*pow(10,exp)*input->units_arr[index].constant;
+	int index = ComboBox_GetCurSel(input->hCB_unit);
+	if(mpfr_set_str(unit_const,input->units_arr[index].constant,10,MPFR_RNDN) == -1)
+	{
+		return false;
+	}
+
+	mpfr_ui_pow(number,10,exp,MPFR_RNDN);
+
+	mpfr_mul(number,number,num,MPFR_RNDN);
+	mpfr_mul(number,number,unit_const,MPFR_RNDN);
+
 	return true;
 }
 
