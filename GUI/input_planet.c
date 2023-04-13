@@ -4,12 +4,10 @@ input_planet_t input_planet_create(const char* defname, size_t line, size_t n_ta
 {
 	input_planet_t input;
 
-	puts("\tstep 1.1");
 	input_obj_set_defctrls(input,defname,line,n_tab);//+3 lines
 	line+=3;
 	n_tab+=2;
 
-	puts("\tstep 1.2");
 	input.aphelion = input_quantity_create("Afelio",meter_units,line,n_tab);
 	line+=INPUT_QUANTITY_N_LINES;
 
@@ -22,13 +20,10 @@ input_planet_t input_planet_create(const char* defname, size_t line, size_t n_ta
 	input.phase_angle = input_quantity_create("Angulo de fase",angle_units,line,n_tab);
 	line+=INPUT_QUANTITY_N_LINES;
 
-	puts("\tstep 2");
 	input.body = input_body_create("Radio y masa",line,n_tab);
 
-	puts("\tstep 3");
 	input_repaint();
 
-	puts("\tstep 4");
 	return input;
 }
 

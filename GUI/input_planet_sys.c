@@ -62,23 +62,13 @@ void input_planet_sys_add_planet(input_planet_sys_t * input)
         size_t pos = input_get_wnd_line(input->hEdit_name);
         size_t start_line = pos+INPUT_PLANET_SYS_MIN_N_LINES;
 
-	puts("step 1");
-
         input->planets_arr_len++;
         input->planets_arr = realloc(input->planets_arr,input->planets_arr_len*sizeof(input_planet_t));
-
-	puts("step 2");
 
         char buffer[100];
         sprintf(buffer,"Planeta %zu",input->planets_arr_len-1);
 
-	puts("step 3");
-
-	printf("ptr: %p\n",input->planets_arr);
-
         input->planets_arr[input->planets_arr_len-1] = input_planet_create(buffer,start_line,input_get_wnd_tab(input->hButton_new_planet)+1);
-
-	puts("step 4");
 }
 
 void input_planet_sys_add_sys(input_planet_sys_t * input)
@@ -86,24 +76,14 @@ void input_planet_sys_add_sys(input_planet_sys_t * input)
         size_t pos = input_get_wnd_line(input->hEdit_name);
         size_t start_line = pos+INPUT_PLANET_SYS_MIN_N_LINES;
 
-	puts("step 1");
 
         input->planet_sys_childs_arr_len++;
         input->planet_sys_childs_arr = realloc(input->planet_sys_childs_arr,input->planet_sys_childs_arr_len*sizeof(input_planet_sys_child_t));
 
-	puts("step 2");
-
         char buffer[100];
         sprintf(buffer,"Sistema planetario %zu",input->planet_sys_childs_arr_len-1);
 
-	puts("step 3");
-
-	printf("ptr: %p\n",input->planet_sys_childs_arr);
-
         input->planet_sys_childs_arr[input->planet_sys_childs_arr_len-1] = input_planet_sys_child_create(buffer,start_line,input_get_wnd_tab(input->hButton_new_planet)+1);
-
-	puts("step 4");
-
 }
 
 //after the user clicked hButton_destroy
