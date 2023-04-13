@@ -19,21 +19,22 @@ typedef struct __coord_t
 
 typedef enum entity_direction {
 	ENTDIR_PLUS/*sentido antihorario*/,
-	ENTDIR_NEG/*sentido horario*/
+	ENTDIR_NEG/*sentido horario*/,
+	ENTDIR_NOMOVE
 }entity_direction_t;
-
-typedef struct
-{
-	entity_direction_t direction;
-	mpfr_t aphelion, mpfr_t perihelion;
-	void (*update_coord)(plt_sys_entity_t*, mpfr_t stime);
-}plt_sys_trajectory_t;
 
 typedef struct
 {
 	mpfr_t radius;
 	mpfr_t mass;
 }plt_sys_body_attr_t;
+
+typedef struct
+{
+	entity_direction_t direction;
+	mpfr_t aphelion, perihelion;
+	void (*update_coord)(void*, mpfr_t stime);
+}plt_sys_trajectory_t;
 
 typedef struct
 {

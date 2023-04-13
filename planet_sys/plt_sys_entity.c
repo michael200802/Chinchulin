@@ -3,7 +3,7 @@
 void plt_sys_entity_init(
         plt_sys_entity_t * ent,
         mpfr_t radius, mpfr_t mass,//plt_sys_body_attr_t
-        entity_direction_t direction, mpfr_t aphelion, mpfr_t perihelion, void (*update_coord)(plt_sys_entity_t*, mpfr_t),//plt_sys_trajectory_t
+        entity_direction_t direction, mpfr_t aphelion, mpfr_t perihelion, void (*update_coord)(void*, mpfr_t),//plt_sys_trajectory_t
         mpfr_t inclination_angle, mpfr_t phase_angle, plt_sys_coord_t * origin//plt_sys_coord_t
 )
 {
@@ -26,6 +26,23 @@ void plt_sys_entity_init(
 	update_coord(ent,stime);
 }
 
+void plt_sys_entity_nomove_init(
+                plt_sys_entity_t * ent,
+                mpfr_t radius, mpfr_t mass,//plt_sys_body_attr_t
+                mpfr_t x_pos, mpfr_t y_pos
+        )
+{
+        mpfr_set(ent->body.radius,radius,MPFR_RNDN);
+        mpfr_set(ent->body.mass,mass,MPFR_RNDN);
+
+	ent->trajectory.direction = ENTDIR_NOMOVE;
+
+	mpfr_set(ent->coord.X,x_pos,MPFR_RNDN);
+	mpfr_set(ent->coord.Y,y_pos,MPFR_RNDN);
+	ent->coord.origin = NULL;
+}
+
+
 void plt_sys_entity_destroy(
         plt_sys_entity_t * ent
 )
@@ -37,7 +54,7 @@ void plt_sys_entity_destroy(
 	mpfr_clear(ent->trajectory.perihelion);
 
 	mpfr_clear(ent->coord.X);
-	mpfr_clear(ent->coord.Y)
+	mpfr_clear(ent->coord.Y);
 	mpfr_clear(ent->coord.cur_angle);
 	mpfr_clear(ent->coord.inclination_angle);
 }
