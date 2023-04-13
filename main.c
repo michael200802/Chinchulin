@@ -1,7 +1,135 @@
 #include "GUI/input_planet_sys.h"
 
+#include "planet_sys/plt_sys_entity.h"
+
 input_planet_sys_t * plt_sys_arr = NULL;
 size_t plt_sys_arr_len = 0;
+
+size_t __get_total_n_entities(input_planet_sys_child_t* plt_sys)
+{
+	size_t total = plt_sys->planets_arr_len+plt_sys->planet_sys_childs_arr_len;
+	for(size_t i = 0; i < plt_sys->planet_sys_childs_arr_len; i++)
+	{
+		total += __get_total_n_entities(plt_sys->planet_sys_childs_arr+i);
+	}
+	return total;
+}
+
+size_t get_total_n_entities(input_planet_sys_t* plt_sys)
+{
+	size_t total = plt_sys->planets_arr_len+plt_sys->planet_sys_childs_arr_len;
+	for(size_t i = 0; i < plt_sys->planet_sys_childs_arr_len; i++)
+	{
+		total += __get_total_n_entities(plt_sys->planet_sys_childs_arr+i);
+	}
+	return total;
+}
+
+MPFR_DECL_INIT(radius,DEFAULT_PREC);
+MPFR_DECL_INIT(mass,DEFAULT_PREC);
+MPFR_DECL_INIT(aphelion,DEFAULT_PREC);
+MPFR_DECL_INIT(perihelion,DEFAULT_PREC);
+MPFR_DECL_INIT(inclination_angle,DEFAULT_PREC);
+MPFR_DECL_INIT(phase_angle,DEFAULT_PREC);
+
+MPFR_DECL_INIT(x_pos,DEFAULT_PREC);
+MPFR_DECL_INIT(y_pos,DEFAULT_PREC);
+
+plt_sys_entity_t* __get_entities_arr(input_planet_sys_child_t* plt_sys, plt_sys_entity_t* arr)
+{
+	plt_sys_entity_t* plt_sys_ent = arr-1;
+	plt_sys_coord_t * origin = &plt_sys_ent->coord;
+        for(size_t i = 0; i < plt_sys->planet_sys_childs_arr_len; i++)
+        {
+		input_planet_sys_child_t* cur_sys = plt_sys->planet_sys_childs_arr+i;
+
+		input_quantity_get_num(&cur_sys->star.radius,radius);
+		input_quantity_get_num(&cur_sys->star.mass,mass);
+		input_quantity_get_num(&cur_sys->aphelion,aphelion);
+		input_quantity_get_num(&cur_sys->perihelion,perihelion);
+		input_quantity_get_num(&cur_sys->inclination_angle,inclination_angle);
+		input_quantity_get_num(&cur_sys->phase_angle,phase_angle);
+
+		plt_sys_entity_init(
+					arr,
+					radius,mass,
+					ENTDIR_PLUS,aphelion,perihelion,update_coord_def,
+					inclination_angle,phase_angle,origin
+				);
+		arr++;
+
+		arr = __get_entities_arr(plt_sys->planet_sys_childs_arr+i,arr);
+        }
+	for(size_t i = 0; i < plt_sys->planets_arr_len; i++)
+        {
+		input_planet_t* cur_plt = plt_sys->planets_arr+i;
+
+		input_quantity_get_num(&cur_plt->body.radius,radius);
+		input_quantity_get_num(&cur_plt->body.mass,mass);
+		input_quantity_get_num(&cur_plt->aphelion,aphelion);
+		input_quantity_get_num(&cur_plt->perihelion,perihelion);
+		input_quantity_get_num(&cur_plt->inclination_angle,inclination_angle);
+		input_quantity_get_num(&cur_plt->phase_angle,phase_angle);
+
+		plt_sys_entity_init(
+					arr,
+					radius,mass,
+					ENTDIR_PLUS,aphelion,perihelion,update_coord_def,
+					inclination_angle,phase_angle,origin
+				);
+                arr++;
+        }
+	return arr;
+}
+
+plt_sys_entity_t* get_entities_arr(input_planet_sys_t* plt_sys, plt_sys_entity_t* arr)
+{
+	plt_sys_entity_t* arr_original = arr;
+	plt_sys_coord_t * origin = NULL;
+        for(size_t i = 0; i < plt_sys->planet_sys_childs_arr_len; i++)
+        {
+		input_planet_sys_child_t* cur_sys = plt_sys->planet_sys_childs_arr+i;
+
+		input_quantity_get_num(&cur_sys->star.radius,radius);
+		input_quantity_get_num(&cur_sys->star.mass,mass);
+		input_quantity_get_num(&cur_sys->aphelion,aphelion);
+		input_quantity_get_num(&cur_sys->perihelion,perihelion);
+		input_quantity_get_num(&cur_sys->inclination_angle,inclination_angle);
+		input_quantity_get_num(&cur_sys->phase_angle,phase_angle);
+
+		plt_sys_entity_init(
+					arr,
+					radius,mass,
+					ENTDIR_PLUS,aphelion,perihelion,update_coord_def,
+					inclination_angle,phase_angle,origin
+				);
+		arr++;
+
+		arr = __get_entities_arr(plt_sys->planet_sys_childs_arr+i,arr);
+        }
+	for(size_t i = 0; i < plt_sys->planets_arr_len; i++)
+        {
+		input_planet_t* cur_plt = plt_sys->planets_arr+i;
+
+		input_quantity_get_num(&cur_plt->body.radius,radius);
+		input_quantity_get_num(&cur_plt->body.mass,mass);
+		input_quantity_get_num(&cur_plt->aphelion,aphelion);
+		input_quantity_get_num(&cur_plt->perihelion,perihelion);
+		input_quantity_get_num(&cur_plt->inclination_angle,inclination_angle);
+		input_quantity_get_num(&cur_plt->phase_angle,phase_angle);
+
+		plt_sys_entity_init(
+					arr,
+					radius,mass,
+					ENTDIR_PLUS,aphelion,perihelion,update_coord_def,
+					inclination_angle,phase_angle,origin
+				);
+                arr++;
+        }
+	printf("diff: %zu\n",(size_t)((intptr_t)arr-(intptr_t)arr_original)/sizeof(plt_sys_entity_t));
+
+	return arr;
+}
 
 void __handle_command_msg(HWND hWnd, input_planet_sys_child_t * plt_sys_child)
 {
@@ -299,7 +427,28 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 						break;
 					case MENU_START_ID:
 						{
-							
+							size_t total = plt_sys_arr_len;
+							for(size_t i = 0; i < plt_sys_arr_len; i++)
+							{
+								total += get_total_n_entities(plt_sys_arr+i);
+							}
+							plt_sys_entity_t * ent_arr, * arr;
+							size_t ent_arr_len = total;
+
+							arr = ent_arr = malloc(total*sizeof(plt_sys_entity_t));
+
+                                                        for(size_t i = 0; i < plt_sys_arr_len; i++)
+                                                        {
+						                input_quantity_get_num(&plt_sys_arr[i].star.radius,radius);
+	        					        input_quantity_get_num(&plt_sys_arr[i].star.mass,mass);
+
+						                input_quantity_get_num(&plt_sys_arr[i].x_pos,x_pos);
+	        					        input_quantity_get_num(&plt_sys_arr[i].y_pos,y_pos);
+
+								plt_sys_entity_nomove_init(arr,radius,mass,x_pos,y_pos);
+								arr++;
+								arr = get_entities_arr(plt_sys_arr+i,arr);
+                                                        }
 						}
 						break;
 					default:
