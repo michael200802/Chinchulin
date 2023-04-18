@@ -6,10 +6,10 @@
 extern def_unit_t meter_units[12];
 extern def_unit_t gr_units[10];
 extern def_unit_t angle_units[3];
-extern def_unit_t long_time_units[2];
+extern def_unit_t long_time_units[3];
 extern def_unit_t short_time_units[3];
 
-#define MPFR_DEFAULT_PRECISION 200
+#include "../planet_sys/plt_sys_entity.h"
 
 extern HWND __hMainWnd;
 extern HINSTANCE __hIns;
