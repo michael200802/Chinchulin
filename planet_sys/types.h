@@ -16,7 +16,6 @@ typedef struct __coord_t
 
 #define ORIGIN_COORD NULL
 
-
 typedef enum entity_direction {
 	ENTDIR_PLUS/*sentido antihorario*/,
 	ENTDIR_NEG/*sentido horario*/,
@@ -33,6 +32,7 @@ typedef struct
 {
 	entity_direction_t direction;
 	mpfr_t aphelion, perihelion;
+	mpfr_t big_mass;
 	void (*update_coord)(void*, mpfr_t stime);
 }plt_sys_trajectory_t;
 
