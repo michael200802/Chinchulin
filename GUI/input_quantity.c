@@ -2,6 +2,8 @@
 
 #include <ctype.h>
 
+bool quantity_errno = true;
+
 input_quantity_t input_quantity_create(const char* name, def_unit_t* unit_arr, size_t line, size_t n_tab)
 {
 	const HINSTANCE hIns = __hIns;
@@ -201,20 +203,19 @@ bool input_quantity_check_val(input_quantity_t*input)
 	if(num_empty && exp_empty)
 	{
 		Static_SetText(input->hStatic_Error,INPUT_QUANTITY_EMPTY_ERROR);
-		return false;
+		return (quantity_errno = false);
 	}
 	else
 	{
 		if(!num_valid && !exp_valid)
 		{
 			Static_SetText(input->hStatic_Error,INPUT_QUANTITY_NOBOTH_ERROR);
-			return false;
+			return (quantity_errno = false);
 		}
 		else
 		{
 			char buffer[100];
 			size_t buffer_len = 0;
-			printf("num%d exp%d\n",num_valid,exp_valid);
 			if(!num_valid)
 			{
 				buffer_len+=sprintf(buffer+buffer_len,INPUT_QUANTITY_NONUM_ERROR", ");
@@ -234,7 +235,7 @@ bool input_quantity_check_val(input_quantity_t*input)
 			if(buffer_len != 0)
 			{
 				Static_SetText(input->hStatic_Error,buffer);
-				return false;
+				return (quantity_errno = false);
 			}
 		}
 	}
@@ -254,20 +255,20 @@ bool input_quantity_get_num(input_quantity_t* input, mpfr_t number)
 	Edit_GetText(input->hEdit_num,buf,100);
 	if(mpfr_set_str(num,buf,10,MPFR_RNDN) == -1)
 	{
-		return false;
+		return (quantity_errno = false);
 	}
 
 	Edit_GetText(input->hEdit_exp,buf,100);
 	if(mpfr_set_str(exp,buf,10,MPFR_RNDN) == -1)
 	{
-		return false;
+		return (quantity_errno = false);
 	}
 
 
 	int index = ComboBox_GetCurSel(input->hCB_unit);
 	if(mpfr_set_str(unit_const,input->units_arr[index].constant,10,MPFR_RNDN) == -1)
 	{
-		return false;
+		return (quantity_errno = false);
 	}
 
 	mpfr_ui_pow(number,10,exp,MPFR_RNDN);

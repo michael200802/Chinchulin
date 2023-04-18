@@ -24,6 +24,9 @@
 
 //line (0-n_lines)
 //n_tab (0-n_tabs)
+
+extern bool quantity_errno;
+
 input_quantity_t input_quantity_create(const char* name, def_unit_t* unit_arr, size_t line, size_t n_tab);
 
 bool input_quantity_check_val(input_quantity_t*input);

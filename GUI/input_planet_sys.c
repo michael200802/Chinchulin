@@ -7,6 +7,10 @@ input_planet_sys_t input_planet_sys_create(const char* defname, size_t line, siz
         const HINSTANCE hIns = __hIns;
         const HWND hMainWnd = __hMainWnd;
 
+        SCROLLINFO scinf = {.cbSize = sizeof(SCROLLINFO), .fMask = SIF_POS};
+        GetScrollInfo(hMainWnd,SB_VERT,&scinf);
+        ScrollWindow(hMainWnd,0,scinf.nPos,NULL,NULL);
+
         input_obj_set_defctrls(input,defname,line,n_tab);//+3 lines
         line+=3;
 
@@ -53,6 +57,8 @@ input_planet_sys_t input_planet_sys_create(const char* defname, size_t line, siz
 	input_add_line(line,SEPARATOR_LINE);
 
 	input_repaint();
+
+        ScrollWindow(hMainWnd,0,-1*scinf.nPos,NULL,NULL);
 
         return input;
 }
@@ -112,6 +118,10 @@ void input_planet_sys_remove_sys(input_planet_sys_t * input, size_t i)
 
 void input_planet_sys_destroy(input_planet_sys_t * input)
 {
+        SCROLLINFO scinf = {.cbSize = sizeof(SCROLLINFO), .fMask = SIF_POS};
+        GetScrollInfo(__hMainWnd,SB_VERT,&scinf);
+        ScrollWindow(__hMainWnd,0,scinf.nPos,NULL,NULL);
+
 	input_quantity_destroy(&input->x_pos);
         input_quantity_destroy(&input->y_pos);
         input_body_destroy(&input->star);
@@ -129,5 +139,7 @@ void input_planet_sys_destroy(input_planet_sys_t * input)
                 input_delete_line(pos);
         }
 	input_repaint();
+
+        ScrollWindow(__hMainWnd,0,-1*scinf.nPos,NULL,NULL);
 }
 

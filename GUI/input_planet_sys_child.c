@@ -7,6 +7,10 @@ input_planet_sys_child_t input_planet_sys_child_create(const char* defname, size
 	const HINSTANCE hIns = __hIns;
         const HWND hMainWnd = __hMainWnd;
 
+        SCROLLINFO scinf = {.cbSize = sizeof(SCROLLINFO), .fMask = SIF_POS};
+        GetScrollInfo(hMainWnd,SB_VERT,&scinf);
+        ScrollWindow(hMainWnd,0,scinf.nPos,NULL,NULL);
+
 	input_obj_set_defctrls(input,defname,line,n_tab);//+3 lines
 	line+=3;
 	n_tab+=2;
@@ -58,6 +62,9 @@ input_planet_sys_child_t input_planet_sys_child_create(const char* defname, size
 	input_add_line(line,SEPARATOR_LINE);
 
 	input_repaint();
+
+        ScrollWindow(hMainWnd,0,-1*scinf.nPos,NULL,NULL);
+
         return input;
 }
 
@@ -114,6 +121,10 @@ void input_planet_sys_child_remove_sys(input_planet_sys_child_t * input, size_t 
 
 void input_planet_sys_child_destroy(input_planet_sys_child_t * input)
 {
+        SCROLLINFO scinf = {.cbSize = sizeof(SCROLLINFO), .fMask = SIF_POS};
+        GetScrollInfo(__hMainWnd,SB_VERT,&scinf);
+        ScrollWindow(__hMainWnd,0,scinf.nPos,NULL,NULL);
+
 	size_t n_lines = INPUT_PLANET_SYS_CHILD_MIN_N_LINES;
 	input_quantity_destroy(&input->aphelion);n_lines-=INPUT_QUANTITY_N_LINES;
 	input_quantity_destroy(&input->perihelion);n_lines-=INPUT_QUANTITY_N_LINES;
@@ -135,6 +146,8 @@ void input_planet_sys_child_destroy(input_planet_sys_child_t * input)
 	}
 
 	input_repaint();
+
+        ScrollWindow(__hMainWnd,0,-1*scinf.nPos,NULL,NULL);
 }
 
 

@@ -4,6 +4,10 @@ input_planet_t input_planet_create(const char* defname, size_t line, size_t n_ta
 {
 	input_planet_t input;
 
+	SCROLLINFO scinf = {.cbSize = sizeof(SCROLLINFO), .fMask = SIF_POS};
+	GetScrollInfo(__hMainWnd,SB_VERT,&scinf);
+	ScrollWindow(__hMainWnd,0,scinf.nPos,NULL,NULL);
+
 	input_obj_set_defctrls(input,defname,line,n_tab);//+3 lines
 	line+=3;
 	n_tab+=2;
@@ -24,11 +28,17 @@ input_planet_t input_planet_create(const char* defname, size_t line, size_t n_ta
 
 	input_repaint();
 
+	ScrollWindow(__hMainWnd,0,-1*scinf.nPos,NULL,NULL);
+
 	return input;
 }
 
 void input_planet_destroy(input_planet_t* input)
 {
+	SCROLLINFO scinf = {.cbSize = sizeof(SCROLLINFO), .fMask = SIF_POS};
+	GetScrollInfo(__hMainWnd,SB_VERT,&scinf);
+	ScrollWindow(__hMainWnd,0,scinf.nPos,NULL,NULL);
+
 	size_t n_lines = INPUT_PLANET_N_LINES;
 	input_quantity_destroy(&input->aphelion);n_lines-=INPUT_QUANTITY_N_LINES;
 	input_quantity_destroy(&input->perihelion);n_lines-=INPUT_QUANTITY_N_LINES;
@@ -41,4 +51,6 @@ void input_planet_destroy(input_planet_t* input)
 		input_delete_line(pos);
 	}
 	input_repaint();
+
+	ScrollWindow(__hMainWnd,0,-1*scinf.nPos,NULL,NULL);
 }
