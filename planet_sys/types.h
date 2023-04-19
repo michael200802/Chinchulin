@@ -1,8 +1,8 @@
 #pragma once
 
-#include <mpfr.h>
+#include "../config/config.h"
 
-#define DEFAULT_PREC 200
+#include <mpfr.h>
 
 typedef struct __coord_t
 {
@@ -42,3 +42,9 @@ typedef struct
 	plt_sys_trajectory_t trajectory;
 	plt_sys_coord_t coord;
 }plt_sys_entity_t;
+
+typedef struct
+{
+	plt_sys_entity_t * arr;
+	size_t len;
+}plt_sys_t;

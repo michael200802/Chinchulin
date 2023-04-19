@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../../config/config.h"
+
 #include <mpfr.h>
 
 #include <windows.h>

@@ -19,22 +19,22 @@ void plt_sys_entity_init(
 {
 	__plt_sys_entity_init(ent);
 
-	mpfr_set(ent->body.radius,radius,MPFR_RNDN);
-	mpfr_set(ent->body.mass,mass,MPFR_RNDN);
+	mpfr_set(ent->body.radius,radius,MPFR_DEFAULT_RND);
+	mpfr_set(ent->body.mass,mass,MPFR_DEFAULT_RND);
 
 	ent->trajectory.direction = direction;
-	mpfr_set(ent->trajectory.aphelion,aphelion,MPFR_RNDN);
-	mpfr_set(ent->trajectory.perihelion,perihelion,MPFR_RNDN);
-	mpfr_set(ent->trajectory.big_mass,big_mass,MPFR_RNDN);
+	mpfr_set(ent->trajectory.aphelion,aphelion,MPFR_DEFAULT_RND);
+	mpfr_set(ent->trajectory.perihelion,perihelion,MPFR_DEFAULT_RND);
+	mpfr_set(ent->trajectory.big_mass,big_mass,MPFR_DEFAULT_RND);
 	ent->trajectory.update_coord = update_coord;
 
-	mpfr_set(ent->coord.inclination_angle,inclination_angle,MPFR_RNDN);
-	mpfr_set(ent->coord.cur_angle,phase_angle,MPFR_RNDN);
+	mpfr_set(ent->coord.inclination_angle,inclination_angle,MPFR_DEFAULT_RND);
+	mpfr_set(ent->coord.cur_angle,phase_angle,MPFR_DEFAULT_RND);
 	ent->coord.origin = origin;
 
 	//get initial x and y
-	MPFR_DECL_INIT(stime,DEFAULT_PREC);
-	mpfr_set_ui(stime,0,MPFR_RNDN);
+	MPFR_DECL_INIT(stime,MPFR_DEFAULT_RND);
+	mpfr_set_ui(stime,0,MPFR_DEFAULT_RND);
 	update_coord(ent,stime);
 
 }
@@ -49,26 +49,26 @@ void plt_sys_get_real_coord(
 	MPFR_DECL_INIT(x_val_aux,MPFR_DEFAULT_PRECISION);
 	MPFR_DECL_INIT(y_val_aux,MPFR_DEFAULT_PRECISION);
 
-	mpfr_set_ui(x_val,0,MPFR_RNDN);
-	mpfr_set_ui(y_val,0,MPFR_RNDN);
+	mpfr_set_ui(x_val,0,MPFR_DEFAULT_RND);
+	mpfr_set_ui(y_val,0,MPFR_DEFAULT_RND);
 
 	for(int i = 0;coord;i++)
 	{
-		mpfr_pow_ui(x_val_aux,coord->X,2,MPFR_RNDN);
-		mpfr_pow_ui(y_val_aux,coord->Y,2,MPFR_RNDN);
-		mpfr_add(module,x_val_aux,y_val_aux,MPFR_RNDN);
-		mpfr_sqrt(module,module,MPFR_RNDN);
+		mpfr_pow_ui(x_val_aux,coord->X,2,MPFR_DEFAULT_RND);
+		mpfr_pow_ui(y_val_aux,coord->Y,2,MPFR_DEFAULT_RND);
+		mpfr_add(module,x_val_aux,y_val_aux,MPFR_DEFAULT_RND);
+		mpfr_sqrt(module,module,MPFR_DEFAULT_RND);
 
-		mpfr_add(new_angle,coord->cur_angle,coord->inclination_angle,MPFR_RNDN);
+		mpfr_add(new_angle,coord->cur_angle,coord->inclination_angle,MPFR_DEFAULT_RND);
 
-		mpfr_cos(x_val_aux,new_angle,MPFR_RNDN);
-		mpfr_sin(y_val_aux,new_angle,MPFR_RNDN);
+		mpfr_cos(x_val_aux,new_angle,MPFR_DEFAULT_RND);
+		mpfr_sin(y_val_aux,new_angle,MPFR_DEFAULT_RND);
 
-		mpfr_mul(x_val_aux,x_val_aux,module,MPFR_RNDN);
-		mpfr_mul(y_val_aux,y_val_aux,module,MPFR_RNDN);
+		mpfr_mul(x_val_aux,x_val_aux,module,MPFR_DEFAULT_RND);
+		mpfr_mul(y_val_aux,y_val_aux,module,MPFR_DEFAULT_RND);
 
-		mpfr_add(x_val,x_val,x_val_aux,MPFR_RNDN);
-		mpfr_add(y_val,y_val,y_val_aux,MPFR_RNDN);
+		mpfr_add(x_val,x_val,x_val_aux,MPFR_DEFAULT_RND);
+		mpfr_add(y_val,y_val,y_val_aux,MPFR_DEFAULT_RND);
 
                 coord = coord->origin;
 
@@ -83,16 +83,16 @@ void plt_sys_entity_nomove_init(
 {
 	__plt_sys_entity_init(ent);
 
-        mpfr_set(ent->body.radius,radius,MPFR_RNDN);
-        mpfr_set(ent->body.mass,mass,MPFR_RNDN);
+        mpfr_set(ent->body.radius,radius,MPFR_DEFAULT_RND);
+        mpfr_set(ent->body.mass,mass,MPFR_DEFAULT_RND);
 
 	ent->trajectory.direction = ENTDIR_NOMOVE;
 	ent->trajectory.update_coord = update_coord_nomove;
 
-	mpfr_set_ui(ent->coord.inclination_angle,0,MPFR_RNDN);
-	mpfr_set_ui(ent->coord.cur_angle,0,MPFR_RNDN);
-	mpfr_set(ent->coord.X,x_pos,MPFR_RNDN);
-	mpfr_set(ent->coord.Y,y_pos,MPFR_RNDN);
+	mpfr_set_ui(ent->coord.inclination_angle,0,MPFR_DEFAULT_RND);
+	mpfr_set_ui(ent->coord.cur_angle,0,MPFR_DEFAULT_RND);
+	mpfr_set(ent->coord.X,x_pos,MPFR_DEFAULT_RND);
+	mpfr_set(ent->coord.Y,y_pos,MPFR_DEFAULT_RND);
 	ent->coord.origin = NULL;
 }
 

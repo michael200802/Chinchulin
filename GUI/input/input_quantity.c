@@ -253,28 +253,28 @@ bool input_quantity_get_num(input_quantity_t* input, mpfr_t number)
 	MPFR_DECL_INIT(unit_const,MPFR_DEFAULT_PRECISION);
 
 	Edit_GetText(input->hEdit_num,buf,100);
-	if(mpfr_set_str(num,buf,10,MPFR_RNDN) == -1)
+	if(mpfr_set_str(num,buf,10,MPFR_DEFAULT_RND) == -1)
 	{
 		return (quantity_errno = false);
 	}
 
 	Edit_GetText(input->hEdit_exp,buf,100);
-	if(mpfr_set_str(exp,buf,10,MPFR_RNDN) == -1)
+	if(mpfr_set_str(exp,buf,10,MPFR_DEFAULT_RND) == -1)
 	{
 		return (quantity_errno = false);
 	}
 
 
 	int index = ComboBox_GetCurSel(input->hCB_unit);
-	if(mpfr_set_str(unit_const,input->units_arr[index].constant,10,MPFR_RNDN) == -1)
+	if(mpfr_set_str(unit_const,input->units_arr[index].constant,10,MPFR_DEFAULT_RND) == -1)
 	{
 		return (quantity_errno = false);
 	}
 
-	mpfr_ui_pow(number,10,exp,MPFR_RNDN);
+	mpfr_ui_pow(number,10,exp,MPFR_DEFAULT_RND);
 
-	mpfr_mul(number,number,num,MPFR_RNDN);
-	mpfr_mul(number,number,unit_const,MPFR_RNDN);
+	mpfr_mul(number,number,num,MPFR_DEFAULT_RND);
+	mpfr_mul(number,number,unit_const,MPFR_DEFAULT_RND);
 
 	return true;
 }

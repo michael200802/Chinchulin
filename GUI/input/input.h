@@ -9,8 +9,6 @@ extern def_unit_t angle_units[3];
 extern def_unit_t long_time_units[3];
 extern def_unit_t short_time_units[3];
 
-#include "../planet_sys/plt_sys_entity.h"
-
 extern HWND __hMainWnd;
 extern HINSTANCE __hIns;
 
