@@ -12,13 +12,13 @@ void update_coord_def(void* _ent, mpfr_t time)
 
 	model_kepler_get_new_angle(ent->coord.cur_angle,&ell,ent->coord.cur_angle, ent->trajectory.big_mass, time);
 
-	mpfr_cos(ent->coord.X,ent->coord.cur_angle,MPFR_RNDN);
-	mpfr_sin(ent->coord.Y,ent->coord.cur_angle,MPFR_RNDN);
+	mpfr_cos(ent->coord.X,ent->coord.cur_angle,MPFR_DEFAULT_RND);
+	mpfr_sin(ent->coord.Y,ent->coord.cur_angle,MPFR_DEFAULT_RND);
 
-	mpfr_mul(ent->coord.X,ent->coord.X,r_val,MPFR_RNDN);
-	mpfr_mul(ent->coord.Y,ent->coord.Y,r_val,MPFR_RNDN);
+	mpfr_mul(ent->coord.X,ent->coord.X,r_val,MPFR_DEFAULT_RND);
+	mpfr_mul(ent->coord.Y,ent->coord.Y,r_val,MPFR_DEFAULT_RND);
 
-	mpfr_sub(ent->coord.X,ent->coord.X,ell.c,MPFR_RNDN);
+	mpfr_sub(ent->coord.X,ent->coord.X,ell.c,MPFR_DEFAULT_RND);
 
 	mpfr_clears(ell.a,ell.b,ell.e,ell.c,(mpfr_ptr)0);
 }
