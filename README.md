@@ -8,7 +8,7 @@ Eso si, gcc debe tener instalado pthread, gmp y mpfr. Ah, y debe poder usar WINA
 
 # Build and run (en ingles pa hacerme el pro)
 
-Para compilar, debes ir al directorio build y poner el siguiente comando: "make all"
+Para compilar, debes ir al directorio build y modificar el makefile para que se use tu compilador (solo cambia al valor de compiler). Luego, pon el siguiente comando: "make all".
 Luego, ve al directorio run, donde ya estaran listas las dll y el .exe. Solo ejecuta wmain.exe y listo.
 
 
